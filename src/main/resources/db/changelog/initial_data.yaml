@@ -1,0 +1,218 @@
+databaseChangeLog:
+  - changeSet:
+      id: users_table_created
+      author: katymtayev
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(512)
+              - column:
+                  name: first_name
+                  type: varchar(50)
+              - column:
+                  name: last_name
+                  type: varchar(50)
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValue: NOW()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated
+                  type: TIMESTAMP
+                  defaultValue: NOW()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(25)
+                  defaultValue: ACTIVE
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: roles_table_created
+      author: katymtayev
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValue: NOW()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated
+                  type: TIMESTAMP
+                  defaultValue: NOW()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(25)
+                  defaultValue: ACTIVE
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: user_roles_table_created
+      author: katymtayev
+      changes:
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  name: role_id
+                  type: BIGINT
+
+  - changeSet:
+      id: fk_user_roles_added
+      author: katymtayev
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_roles
+            constraintName: fk_user_roles_user
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: users
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: user_roles
+            constraintName: fk_user_roles_role
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: roles
+
+  - changeSet:
+      id: insert_initial_roles
+      author: katymtayev
+      changes:
+        - insert:
+            tableName: roles
+            column:
+                name: name
+                value: ROLE_USER
+        - insert:
+            tableName: roles
+            column:
+                name: name
+                value: ROLE_ADMIN
+
+  - changeSet:
+      id: profiles_table_created
+      author: katymtayev
+      changes:
+        - createTable:
+            tableName: profiles
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: department
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: position
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reason
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: instead_user_id
+                  type: BIGINT
+              - column:
+                  name: executor_id
+                  type: BIGINT
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValue: NOW()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated
+                  type: TIMESTAMP
+                  defaultValue: NOW()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(25)
+                  defaultValue: ACTIVE
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: fk_profiles_added
+      author: katymtayev
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: executor_id
+            baseTableName: profiles
+            constraintName: fk_profiles_executor
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: users
+        - addForeignKeyConstraint:
+            baseColumnNames: instead_user_id
+            baseTableName: profiles
+            constraintName: fk_users_instead_user
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: users
+
